@@ -26,6 +26,7 @@
 
 - auto_imports.py : importa as bibliotecas necessárias para a aplicação funcionar
 - controllers.py: possui os endpoints e disponibiliza a API, deve ser executado após o main.py
+- services.py: possui os serviços que as apis utilizam
 - functions_statistical.py: possui os métodos de análise estatistica
 - grid_search_parameters.py: possui as variáveis utilizadas no grid search de cada modelo
 - image_handler.py: possui funções relacionadas às imagens como transformação e plot

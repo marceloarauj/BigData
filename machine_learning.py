@@ -40,7 +40,7 @@ class MachineLearning:
             self.database["x"].reshape((-1,28 * 28)),
             self.database["y"],
             scoring=scoring_option,
-            cv=epochs
+            cv=epochs,
         )
 
         print("{}: {}".format(scoring_option,score))
@@ -99,7 +99,7 @@ class MachineLearning:
 
         self.separateClasses()
 
-        print("\nParte 5 - Executando Grid Search , isso pode levar algum tempo...")
+        print("\nParte 5 - Executando Grid Searchs , isso pode levar algum tempo...")
         
         gs_parameters = GSParameters()
         
@@ -108,6 +108,7 @@ class MachineLearning:
         decision_tree = DecisionTreeClassifier()
         naive_bayes = BernoulliNB()
 
+        print("\nObtendo melhores parâmetros para accuracy")
         #Melhores parâmetros de accuracy
         knn_parameters_accuracy = self.gridSeach(knn,gs_parameters.knnParameters(),'accuracy')
         rf_parameters_accuracy = self.gridSeach(random_forest,gs_parameters.randomForestParameters(),'accuracy')
@@ -119,33 +120,36 @@ class MachineLearning:
         decision_tree = DecisionTreeClassifier()
         naive_bayes = BernoulliNB()
 
+        print("\nObtendo melhores parâmetros para f1")
         #Melhores parâmetros de f1
-        knn_parameters_f1 = self.gridSeach(knn,gs_parameters.knnParameters(),'f1')
-        rf_parameters_f1 = self.gridSeach(random_forest,gs_parameters.randomForestParameters(),'f1')
-        dt_parameters_f1 = self.gridSeach(decision_tree,gs_parameters.decisionTreeParameters(),'f1')
-        nb_parameters_f1 = self.gridSeach(naive_bayes,gs_parameters.bernoulliParamaters(),'f1')
+        knn_parameters_f1 = self.gridSeach(knn,gs_parameters.knnParameters(),'f1_macro')
+        rf_parameters_f1 = self.gridSeach(random_forest,gs_parameters.randomForestParameters(),'f1_macro')
+        dt_parameters_f1 = self.gridSeach(decision_tree,gs_parameters.decisionTreeParameters(),'f1_macro')
+        nb_parameters_f1 = self.gridSeach(naive_bayes,gs_parameters.bernoulliParamaters(),'f1_macro')
 
         knn = KNeighborsClassifier()
         random_forest = RandomForestClassifier()
         decision_tree = DecisionTreeClassifier()
         naive_bayes = BernoulliNB()
 
+        print("\nObtendo melhores parâmetros para precision")
         #Melhores parâmetros de precision
-        knn_parameters_precision = self.gridSeach(knn,gs_parameters.knnParameters(),'precision')
-        rf_parameters_precision = self.gridSeach(random_forest,gs_parameters.randomForestParameters(),'precision')
-        dt_parameters_precision = self.gridSeach(decision_tree,gs_parameters.decisionTreeParameters(),'precision')
-        nb_parameters_precision = self.gridSeach(naive_bayes,gs_parameters.bernoulliParamaters(),'precision')
+        knn_parameters_precision = self.gridSeach(knn,gs_parameters.knnParameters(),'precision_macro')
+        rf_parameters_precision = self.gridSeach(random_forest,gs_parameters.randomForestParameters(),'precision_macro')
+        dt_parameters_precision = self.gridSeach(decision_tree,gs_parameters.decisionTreeParameters(),'precision_macro')
+        nb_parameters_precision = self.gridSeach(naive_bayes,gs_parameters.bernoulliParamaters(),'precision_macro')
 
         knn = KNeighborsClassifier()
         random_forest = RandomForestClassifier()
         decision_tree = DecisionTreeClassifier()
         naive_bayes = BernoulliNB()
 
+        print("\nObtendo melhores parâmetros para recall")
         #Melhores parâmetros de recall
-        knn_parameters_recall = self.gridSeach(knn,gs_parameters.knnParameters(),'recall')
-        rf_parameters_recall = self.gridSeach(random_forest,gs_parameters.randomForestParameters(),'recall')
-        dt_parameters_recall = self.gridSeach(decision_tree,gs_parameters.decisionTreeParameters(),'recall')
-        nb_parameters_recall = self.gridSeach(naive_bayes,gs_parameters.bernoulliParamaters(),'recall')
+        knn_parameters_recall = self.gridSeach(knn,gs_parameters.knnParameters(),'recall_macro')
+        rf_parameters_recall = self.gridSeach(random_forest,gs_parameters.randomForestParameters(),'recall_macro')
+        dt_parameters_recall = self.gridSeach(decision_tree,gs_parameters.decisionTreeParameters(),'recall_macro')
+        nb_parameters_recall = self.gridSeach(naive_bayes,gs_parameters.bernoulliParamaters(),'recall_macro')
 
         print('\nParte 6 - Treinando modelos com os melhores parametros')
     
@@ -154,13 +158,13 @@ class MachineLearning:
         knn_accuracy_results = self.crossValidation(5,knn_accuracy,'accuracy')
 
         knn_f1 = self.bestKNNModel(knn_parameters_f1)
-        knn_f1_results = self.crossValidation(5,knn_f1,'f1')
+        knn_f1_results = self.crossValidation(5,knn_f1,'f1_macro')
 
         knn_precision = self.bestKNNModel(knn_parameters_precision)
-        knn_precision_results = self.crossValidation(5,knn_precision,'precision')
+        knn_precision_results = self.crossValidation(5,knn_precision,'precision_macro')
 
         knn_recall = self.bestKNNModel(knn_parameters_recall)
-        knn_recall_results = self.crossValidation(5,knn_recall,'recall')
+        knn_recall_results = self.crossValidation(5,knn_recall,'recall_macro')
 
         print('\nAlgoritmo RandomForest')
 
@@ -168,13 +172,13 @@ class MachineLearning:
         random_forest_accuracy_results = self.crossValidation(5,random_forest_accuracy,'accuracy')
 
         random_forest_f1 = self.bestRForestModels(rf_parameters_f1)
-        random_forest_f1_results = self.crossValidation(5,random_forest_f1,'f1')
+        random_forest_f1_results = self.crossValidation(5,random_forest_f1,'f1_macro')
 
         random_forest_precision = self.bestRForestModels(rf_parameters_precision)
-        random_forest_precision_results = self.crossValidation(5,random_forest_precision,'precision')
+        random_forest_precision_results = self.crossValidation(5,random_forest_precision,'precision_macro')
 
         random_forest_recall = self.bestRForestModels(rf_parameters_recall)
-        random_forest_recall_results = self.crossValidation(5,random_forest_recall,'recall')
+        random_forest_recall_results = self.crossValidation(5,random_forest_recall,'recall_macro')
 
         print('\nAlgoritmo DecisionTree')
 
@@ -182,13 +186,13 @@ class MachineLearning:
         decision_tree_accuracy_results = self.crossValidation(5,decision_tree_accuracy,'accuracy')
 
         decision_tree_f1 = self.bestDTreeModel(dt_parameters_f1)
-        decision_tree_f1_results = self.crossValidation(5,decision_tree_f1,'f1')
+        decision_tree_f1_results = self.crossValidation(5,decision_tree_f1,'f1_macro')
 
         decision_tree_precision = self.bestDTreeModel(dt_parameters_precision)
-        decision_tree_precision_results = self.crossValidation(5,decision_tree_precision,'precision')
+        decision_tree_precision_results = self.crossValidation(5,decision_tree_precision,'precision_macro')
 
         decision_tree_recall = self.bestDTreeModel(dt_parameters_recall)
-        decision_tree_recall_results = self.crossValidation(5,decision_tree_recall,'recall')
+        decision_tree_recall_results = self.crossValidation(5,decision_tree_recall,'recall_macro')
 
         print('\nAlgoritmo NaiveBayes')
 
@@ -196,13 +200,13 @@ class MachineLearning:
         naive_bayes_accuracy_results = self.crossValidation(5,naive_bayes_accuracy,'accuracy')
 
         naive_bayes_f1 = self.bestNBModel(nb_parameters_f1)
-        naive_bayes_f1_results = self.crossValidation(5,naive_bayes_f1,'f1')
+        naive_bayes_f1_results = self.crossValidation(5,naive_bayes_f1,'f1_macro')
 
         naive_bayes_precision = self.bestNBModel(nb_parameters_precision)
-        naive_bayes_precision_results = self.crossValidation(5,naive_bayes_precision,'precision')
+        naive_bayes_precision_results = self.crossValidation(5,naive_bayes_precision,'precision_macro')
 
         naive_bayes_recall = self.bestNBModel(nb_parameters_recall)
-        naive_bayes_recall_results = self.crossValidation(5,naive_bayes_recall,'recall')
+        naive_bayes_recall_results = self.crossValidation(5,naive_bayes_recall,'recall_macro')
 
         print('\nParte 7 - Exportando módulos')
 
