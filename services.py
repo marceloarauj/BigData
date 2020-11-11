@@ -33,13 +33,13 @@ class PredictServices:
     dict_models_metrics ={}
 
     classes = {
-            1:'porta_avioes',
+            1:'porta aviões',
             2:'alarme',
-            3:'ambulancia',
+            3:'ambulância',
             4:'anjo',
             5:'formiga',
-            6:'maca',
-            7:'braco',
+            6:'maçã',
+            7:'braço',
             8:'machado',
             9:'urso',
             10:'abelha'
