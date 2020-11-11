@@ -1,5 +1,9 @@
 import numpy as np
+import base64
 from matplotlib import pyplot as plt
+from PIL import Image
+import io
+from cv2 import cv2
 
 class ImageHandler:
 
@@ -16,8 +20,25 @@ class ImageHandler:
     def transformImageTo28x28(self,image):
         return (image.reshape(28,28)).tolist()
 
-    def convertBase64toNumpy(self,image):
-        print('')
+    def imageFormater(self,image):
+
+        #Transforma de base 64 para numpy
+        image_decoded = base64.b64decode(image)
+        image = Image.open(io.BytesIO(image_decoded))
+        cvImage = np.array(image)
+
+        #transforma para grayscale
+        gray_scale = cv2.cvtColor(cvImage,cv2.COLOR_BGR2GRAY)
+
+        #redimensiona
+        img28x28 = cv2.resize(gray_scale,(28,28))
+
+        #redimensiona para uma array
+        image_array = np.array(img28x28)
+        image_array = image_array.reshape((1,28 * 28))
+        
+        #retorna o array da imagem
+        return image_array[0]
 
     def loadDatabase(self,cutDatabase):
         print('Passo 2 - Carregando base de imagens')

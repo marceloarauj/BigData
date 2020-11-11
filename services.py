@@ -8,6 +8,7 @@ class PredictServices:
         self.initMachineLearningModels()
     
     machine_learning = MachineLearning({})
+    image_hander = ImageHandler()
 
     knn_accuracy ={}
     knn_f1 = {}
@@ -28,6 +29,21 @@ class PredictServices:
     naive_bayes_f1 ={}
     naive_bayes_precision ={}
     naive_bayes_recall ={}
+
+    dict_models_metrics ={}
+
+    classes = {
+            1:'porta_avioes',
+            2:'alarme',
+            3:'ambulancia',
+            4:'anjo',
+            5:'formiga',
+            6:'maca',
+            7:'braco',
+            8:'machado',
+            9:'urso',
+            10:'abelha'
+    }
 
     def initMachineLearningModels(self):
         self.knn_accuracy = self.machine_learning.importModel('accuracy_knn.sav')
@@ -50,53 +66,37 @@ class PredictServices:
         self.naive_bayes_precision = self.machine_learning.importModel('precision_bernoulli.sav')
         self.naive_bayes_recall = self.machine_learning.importModel('recall_bernoulli.sav')
         
+        self.dict_models_metrics = {
+            'knn':{
+                'accuracy': self.knn_accuracy,
+                'f1': self.knn_f1,
+                'precision': self.knn_precision,
+                'recall':self.knn_recall
+            },
+            'random_forest':{
+               'accuracy': self.random_forest_accuracy,
+                'f1': self.random_forest_f1,
+                'precision':self.random_forest_precision,
+                'recall':self.random_forest_recall
+            },
+            'decision_tree':{
+               'accuracy': self.decision_tree_accuracy,
+                'f1':self.decision_tree_f1,
+                'precision':self.decision_tree_precision,
+                'recall': self.decision_tree_recall
+            },
+            'naive_bayes':{
+               'accuracy':self.naive_bayes_accuracy,
+                'f1':self.naive_bayes_f1,
+                'precision':self.naive_bayes_precision,
+                'recall':self.naive_bayes_recall
+            }
+        }
     
     def predict(self,image,model_name,metric):
-        
-        if model_name == 'knn' and metric == 'accuracy':
-            print('')
 
-        if model_name == 'knn' and metric == 'f1':
-            print('')
+        imagem = self.image_hander.imageFormater(image)
+        model = self.dict_models_metrics[model_name][metric]
+        classification = model.predict([imagem])
 
-        if model_name == 'knn' and metric == 'precision':
-            print('')
-
-        if model_name == 'knn' and metric == 'recall':
-            print('')
-
-        if model_name == 'random_forest' and metric == 'accuracy':
-            print('')
-
-        if model_name == 'random_forest' and metric == 'f1':
-            print('')
-
-        if model_name == 'random_forest' and metric == 'precision':
-            print('')
-
-        if model_name == 'random_forest' and metric == 'recall':
-            print('')
-
-        if model_name == 'decision_tree' and metric == 'accuracy':
-            print('')
-
-        if model_name == 'decision_tree' and metric == 'f1':
-            print('')
-
-        if model_name == 'decision_tree' and metric == 'precision':
-            print('')
-
-        if model_name == 'decision_tree' and metric == 'recall':
-            print('')
-
-        if model_name == 'naive_bayes' and metric == 'accuracy':
-            print('')
-
-        if model_name == 'naive_bayes' and metric == 'f1':
-            print('')
-
-        if model_name == 'naive_bayes' and metric == 'precision':
-            print('')
-
-        if model_name == 'naive_bayes' and metric == 'recall':
-            print('')
+        return self.classes[classification] 

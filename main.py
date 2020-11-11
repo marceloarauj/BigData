@@ -7,7 +7,7 @@ def main():
     install.install_modules()
 
     image_handler = ImageHandler()
-    database = image_handler.loadDatabase(cutDatabase = 2000)
+    database = image_handler.loadDatabase(cutDatabase = 5000)
 
     machine_learning = MachineLearning(database)
     machine_learning.executeTrain()
