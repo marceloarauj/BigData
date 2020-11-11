@@ -1,4 +1,3 @@
-import 'package:MobilePredict/dropdown_values.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -30,6 +29,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool deveExibirMetricas = false;
   bool deveExibirFoto = false;
+  int model = 0;
+  int metric = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -38,20 +39,83 @@ class _MyHomePageState extends State<MyHomePage> {
           title: Text(widget.title),
         ),
         body: Center(
-            child: Column(
-          children: <Widget>[
-            Container(
-              width: MediaQuery.of(context).size.width / 2,
-              height: 50,
-              child: DropdownButton<String>(
-                  items: DropdownValues.models.map((String dropDownStringItem) {
-                return DropdownMenuItem<String>(
-                  value: dropDownStringItem,
-                  child: Text(dropDownStringItem),
-                );
-              }).toList()),
-            )
-          ],
-        )));
+            child: Column(children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(top: 30),
+            child: Container(
+                width: MediaQuery.of(context).size.width * 0.8,
+                height: 60,
+                child: DropdownButton(
+                  isExpanded: true,
+                  items: _models(),
+                  value: model,
+                  icon: Icon(Icons.desktop_windows),
+                  onChanged: (valor) {
+                    setState(() {
+                      model = valor;
+                    });
+                  },
+                )),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 30),
+            child: Container(
+                width: MediaQuery.of(context).size.width * 0.8,
+                height: 60,
+                child: DropdownButton(
+                  isExpanded: true,
+                  items: _metrics(),
+                  value: metric,
+                  icon: Icon(Icons.data_usage),
+                  onChanged: (valor) {
+                    setState(() {
+                      model = valor;
+                    });
+                  },
+                )),
+          )
+        ])));
+  }
+
+  List<DropdownMenuItem> _models() {
+    return [
+      DropdownMenuItem(
+        child: Text('Nearest Neighbors'),
+        value: 0,
+      ),
+      DropdownMenuItem(
+        child: Text('Random Forest'),
+        value: 1,
+      ),
+      DropdownMenuItem(
+        child: Text('Decision Tree'),
+        value: 2,
+      ),
+      DropdownMenuItem(
+        child: Text('Naive Bayes'),
+        value: 3,
+      )
+    ];
+  }
+
+  List<DropdownMenuItem> _metrics() {
+    return [
+      DropdownMenuItem(
+        child: Text('Accuracy'),
+        value: 0,
+      ),
+      DropdownMenuItem(
+        child: Text('f1'),
+        value: 1,
+      ),
+      DropdownMenuItem(
+        child: Text('Precision'),
+        value: 2,
+      ),
+      DropdownMenuItem(
+        child: Text('Recall'),
+        value: 3,
+      )
+    ];
   }
 }
