@@ -6,6 +6,7 @@ class Modules:
     def __init__(self):
         self.modules = [
             'wheel',
+            'flask-cors',
             'numpy',
             'pandas',
             'matplotlib',
