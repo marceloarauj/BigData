@@ -99,4 +99,4 @@ class PredictServices:
         model = self.dict_models_metrics[model_name][metric]
         classification = model.predict([imagem])
 
-        return self.classes[classification] 
+        return self.classes[classification[0]] 

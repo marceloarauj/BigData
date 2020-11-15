@@ -1,4 +1,4 @@
-from flask import Flask,request,jsonify
+from flask import Flask,request,jsonify,json
 from flask_cors import CORS
 from services import PredictServices
 
@@ -9,10 +9,9 @@ services = PredictServices()
 
 @app.route('/predict',methods=['POST'])
 def postPredict():
-    body = request.json
-    print(body)
+    body =  json.loads(request.data,strict = False)
+    
     metrics = body['metrics']
-    print(metrics)
     model = body['model']
     image = body['image']
 

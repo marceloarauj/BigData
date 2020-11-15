@@ -92,7 +92,24 @@ class MachineLearning:
         return pk.load(open('ExportedModels/' + filename,'rb'))
     
     def exportMetricsAsCSV(self,filename,data):
-        print('')
+
+        with open('Metrics/'+filename,'w',newline='') as myfile:
+            write = csv.writer(myfile,quoting = csv.QUOTE_ALL,delimiter=',')
+            write.writerow(data.keys())
+
+            accuracy = data['accuracy']
+            f1 =  data['f1']
+            precision = data['precision']
+            recall = data['recall']
+
+            for index in range(0,len(accuracy)):
+                row = []
+                row.append(accuracy[index])
+                row.append(f1[index])
+                row.append(precision[index])
+                row.append(recall[index])
+
+                write.writerow(row)
 
     #Lista de Execuções
     def executeTrain(self):
@@ -151,64 +168,86 @@ class MachineLearning:
         dt_parameters_recall = self.gridSeach(decision_tree,gs_parameters.decisionTreeParameters(),'recall_macro')
         nb_parameters_recall = self.gridSeach(naive_bayes,gs_parameters.bernoulliParamaters(),'recall_macro')
 
-        print('\nParte 6 - Treinando modelos com os melhores parametros')
+        print('\nParte 6 - Validando modelos com os melhores parametros')
     
         print('\nAlgoritmo KNN')
         knn_accuracy = self.bestKNNModel(knn_parameters_accuracy)
-        knn_accuracy_results = self.crossValidation(5,knn_accuracy,'accuracy')
+        knn_accuracy_results = self.crossValidation(30,knn_accuracy,'accuracy')
 
         knn_f1 = self.bestKNNModel(knn_parameters_f1)
-        knn_f1_results = self.crossValidation(5,knn_f1,'f1_macro')
+        knn_f1_results = self.crossValidation(30,knn_f1,'f1_macro')
 
         knn_precision = self.bestKNNModel(knn_parameters_precision)
-        knn_precision_results = self.crossValidation(5,knn_precision,'precision_macro')
+        knn_precision_results = self.crossValidation(30,knn_precision,'precision_macro')
 
         knn_recall = self.bestKNNModel(knn_parameters_recall)
-        knn_recall_results = self.crossValidation(5,knn_recall,'recall_macro')
+        knn_recall_results = self.crossValidation(30,knn_recall,'recall_macro')
 
         print('\nAlgoritmo RandomForest')
 
         random_forest_accuracy = self.bestRForestModels(rf_parameters_accuracy)
-        random_forest_accuracy_results = self.crossValidation(5,random_forest_accuracy,'accuracy')
+        random_forest_accuracy_results = self.crossValidation(30,random_forest_accuracy,'accuracy')
 
         random_forest_f1 = self.bestRForestModels(rf_parameters_f1)
-        random_forest_f1_results = self.crossValidation(5,random_forest_f1,'f1_macro')
+        random_forest_f1_results = self.crossValidation(30,random_forest_f1,'f1_macro')
 
         random_forest_precision = self.bestRForestModels(rf_parameters_precision)
-        random_forest_precision_results = self.crossValidation(5,random_forest_precision,'precision_macro')
+        random_forest_precision_results = self.crossValidation(30,random_forest_precision,'precision_macro')
 
         random_forest_recall = self.bestRForestModels(rf_parameters_recall)
-        random_forest_recall_results = self.crossValidation(5,random_forest_recall,'recall_macro')
+        random_forest_recall_results = self.crossValidation(30,random_forest_recall,'recall_macro')
 
         print('\nAlgoritmo DecisionTree')
 
         decision_tree_accuracy = self.bestDTreeModel(dt_parameters_accuracy)
-        decision_tree_accuracy_results = self.crossValidation(5,decision_tree_accuracy,'accuracy')
+        decision_tree_accuracy_results = self.crossValidation(30,decision_tree_accuracy,'accuracy')
 
         decision_tree_f1 = self.bestDTreeModel(dt_parameters_f1)
-        decision_tree_f1_results = self.crossValidation(5,decision_tree_f1,'f1_macro')
+        decision_tree_f1_results = self.crossValidation(30,decision_tree_f1,'f1_macro')
 
         decision_tree_precision = self.bestDTreeModel(dt_parameters_precision)
-        decision_tree_precision_results = self.crossValidation(5,decision_tree_precision,'precision_macro')
+        decision_tree_precision_results = self.crossValidation(30,decision_tree_precision,'precision_macro')
 
         decision_tree_recall = self.bestDTreeModel(dt_parameters_recall)
-        decision_tree_recall_results = self.crossValidation(5,decision_tree_recall,'recall_macro')
+        decision_tree_recall_results = self.crossValidation(30,decision_tree_recall,'recall_macro')
 
         print('\nAlgoritmo NaiveBayes')
 
         naive_bayes_accuracy = self.bestNBModel(nb_parameters_accuracy)
-        naive_bayes_accuracy_results = self.crossValidation(5,naive_bayes_accuracy,'accuracy')
+        naive_bayes_accuracy_results = self.crossValidation(30,naive_bayes_accuracy,'accuracy')
 
         naive_bayes_f1 = self.bestNBModel(nb_parameters_f1)
-        naive_bayes_f1_results = self.crossValidation(5,naive_bayes_f1,'f1_macro')
+        naive_bayes_f1_results = self.crossValidation(30,naive_bayes_f1,'f1_macro')
 
         naive_bayes_precision = self.bestNBModel(nb_parameters_precision)
-        naive_bayes_precision_results = self.crossValidation(5,naive_bayes_precision,'precision_macro')
+        naive_bayes_precision_results = self.crossValidation(30,naive_bayes_precision,'precision_macro')
 
         naive_bayes_recall = self.bestNBModel(nb_parameters_recall)
-        naive_bayes_recall_results = self.crossValidation(5,naive_bayes_recall,'recall_macro')
+        naive_bayes_recall_results = self.crossValidation(30,naive_bayes_recall,'recall_macro')
 
-        print('\nParte 7 - Exportando módulos')
+        print('\nParte 7 - Treinando modelos')
+        
+        knn_accuracy.fit(self.database["x"].reshape((-1,28 * 28)),self.database["y"])
+        knn_f1.fit(self.database["x"].reshape((-1,28 * 28)),self.database["y"])
+        knn_precision.fit(self.database["x"].reshape((-1,28 * 28)),self.database["y"])
+        knn_recall.fit(self.database["x"].reshape((-1,28 * 28)),self.database["y"])
+
+        random_forest_accuracy.fit(self.database["x"].reshape((-1,28 * 28)),self.database["y"])
+        random_forest_f1.fit(self.database["x"].reshape((-1,28 * 28)),self.database["y"])
+        random_forest_precision.fit(self.database["x"].reshape((-1,28 * 28)),self.database["y"])
+        random_forest_recall.fit(self.database["x"].reshape((-1,28 * 28)),self.database["y"])
+
+        decision_tree_accuracy.fit(self.database["x"].reshape((-1,28 * 28)),self.database["y"])
+        decision_tree_f1.fit(self.database["x"].reshape((-1,28 * 28)),self.database["y"])
+        decision_tree_precision.fit(self.database["x"].reshape((-1,28 * 28)),self.database["y"])
+        decision_tree_recall.fit(self.database["x"].reshape((-1,28 * 28)),self.database["y"])
+
+        naive_bayes_accuracy.fit(self.database["x"].reshape((-1,28 * 28)),self.database["y"])
+        naive_bayes_f1.fit(self.database["x"].reshape((-1,28 * 28)),self.database["y"])
+        naive_bayes_precision.fit(self.database["x"].reshape((-1,28 * 28)),self.database["y"])
+        naive_bayes_recall.fit(self.database["x"].reshape((-1,28 * 28)),self.database["y"])
+
+        print('\nParte 8 - Exportando módulos')
 
         self.exportModel('knn.sav',knn_accuracy,'accuracy')
         self.exportModel('random_forest.sav',random_forest_accuracy,'accuracy')
@@ -229,3 +268,34 @@ class MachineLearning:
         self.exportModel('random_forest.sav',random_forest_recall,'recall')
         self.exportModel('decision_tree.sav',decision_tree_recall,'recall')
         self.exportModel('bernoulli.sav',naive_bayes_recall,'recall')
+
+        print('\nParte 9 - Armazenando métricas')
+
+        knn_metrics = {
+            "accuracy":knn_accuracy_results,
+            "f1":knn_f1_results,
+            "precision":knn_precision_results,
+            "recall":knn_recall_results
+        }
+        random_forest_metrics = {
+            "accuracy":random_forest_accuracy_results,
+            "f1":random_forest_f1_results,
+            "precision":random_forest_precision_results,
+            "recall":random_forest_recall_results
+        }
+        decision_tree_metrics = {
+            "accuracy":decision_tree_accuracy_results,
+            "f1":decision_tree_f1_results,
+            "precision":decision_tree_precision_results,
+            "recall":decision_tree_recall_results
+        }
+        naive_bayes_metrics ={
+            "accuracy":naive_bayes_accuracy_results,
+            "f1":naive_bayes_f1_results,
+            "precision":naive_bayes_precision_results,
+            "recall":naive_bayes_recall_results           
+        }
+        self.exportMetricsAsCSV('knn_metrics.csv',knn_metrics)
+        self.exportMetricsAsCSV('random_forest_metrics.csv',random_forest_metrics)
+        self.exportMetricsAsCSV('decision_tree_metrics.csv',decision_tree_metrics)
+        self.exportMetricsAsCSV('naive_bayes_metrics.csv',naive_bayes_metrics)
