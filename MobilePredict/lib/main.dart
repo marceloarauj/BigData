@@ -1,9 +1,28 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+Future<void> main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+  final cameras = await availableCameras();
+  final firstCamera = cameras.first;
+
+  runApp(
+    MaterialApp(
+      theme: ThemeData.dark(),
+      debugShowCheckedModeBanner: false,
+      home: MyApp(
+        camera: firstCamera,
+      ),
+    ),
+  );
+}
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  CameraDescription camera;
+
+  MyApp({this.camera});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -12,15 +31,16 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.amber,
       ),
-      home: MyHomePage(title: 'Predição de dados'),
+      home: MyHomePage(title: 'Predição de dados',camera: camera,),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key key, this.title, this.camera}) : super(key: key);
 
   final String title;
+  final CameraDescription camera;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -31,6 +51,25 @@ class _MyHomePageState extends State<MyHomePage> {
   bool deveExibirFoto = false;
   int model = 0;
   int metric = 0;
+  CameraController _controller;
+  Future<void> _initializeControllerFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = CameraController(
+      widget.camera,
+      ResolutionPreset.medium,
+    );
+
+    _initializeControllerFuture = _controller.initialize();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +112,38 @@ class _MyHomePageState extends State<MyHomePage> {
                     });
                   },
                 )),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 30),
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.8,
+              height: 300,
+              child: FutureBuilder<void>(
+                future: _initializeControllerFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return CameraPreview(_controller);
+                  } else {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                },
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top:30),
+            child: Container(
+
+              width: MediaQuery.of(context).size.width * 0.8,
+              height: 40,
+              child: RaisedButton(
+                  child: Text('Enviar'), 
+                  onPressed: ()=>{
+                    
+                  },                          
+              ),
+              
+            ),
           )
         ])));
   }
