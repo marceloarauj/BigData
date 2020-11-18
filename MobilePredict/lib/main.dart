@@ -1,5 +1,11 @@
+import 'dart:convert';
+
+import 'package:MobilePredict/service.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io' as IO;
 
 Future<void> main() async {
 
@@ -49,8 +55,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool deveExibirMetricas = false;
   bool deveExibirFoto = false;
-  int model = 0;
-  int metric = 0;
+  int model = 1;
+  int metric = 1;
   CameraController _controller;
   Future<void> _initializeControllerFuture;
 
@@ -73,6 +79,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    var requestBody = {};
+
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
@@ -138,8 +146,23 @@ class _MyHomePageState extends State<MyHomePage> {
               height: 40,
               child: RaisedButton(
                   child: Text('Enviar'), 
-                  onPressed: ()=>{
-                    
+                  onPressed: () async {
+                     await _initializeControllerFuture;
+
+                      final path = join(
+
+                        (await getTemporaryDirectory()).path,
+                        '${DateTime.now()}.jpeg',
+                      );
+                      await _controller.takePicture(path);
+
+                      requestBody = {
+                        "model":getAlgoritmValue(model),
+                        "metrics":getMetricValue(metric),
+                        "image":base64Encode(IO.File(path).readAsBytesSync())
+                      };
+
+                      Services.Predict(requestBody);
                   },                          
               ),
               
@@ -188,5 +211,30 @@ class _MyHomePageState extends State<MyHomePage> {
         value: 3,
       )
     ];
+  }
+
+  getMetricValue(int value){
+    switch (value) {
+      case 0:
+        return 'accuracy';
+      case 1:
+        return 'f1';
+      case 2:
+        return 'precision';
+      case 3:
+        return 'recall';
+    }
+  }
+  getAlgoritmValue(int value){
+    switch (value) {
+      case 0:
+        return 'knn';
+      case 1:
+        return 'random_forest';
+      case 2:
+        return 'decision_tree';
+      case 3:
+        return 'naive_bayes';
+    }
   }
 }
