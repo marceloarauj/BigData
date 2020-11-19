@@ -99,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   isExpanded: true,
                   items: _models(),
                   value: model,
-                  icon: Icon(Icons.desktop_windows),
+                  icon: Icon(Icons.desktop_windows,color: Colors.red),
                   onChanged: (valor) {
                     setState(() {
                       model = valor;
@@ -116,7 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   isExpanded: true,
                   items: _metrics(),
                   value: metric,
-                  icon: Icon(Icons.data_usage),
+                  icon: Icon(Icons.data_usage,color: Colors.red,),
                   onChanged: (valor) {
                     setState(() {
                       model = valor;
