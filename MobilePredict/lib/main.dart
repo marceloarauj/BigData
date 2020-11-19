@@ -8,7 +8,6 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io' as IO;
 
 Future<void> main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
   final cameras = await availableCameras();
   final firstCamera = cameras.first;
@@ -35,9 +34,12 @@ class MyApp extends StatelessWidget {
       title: 'Mobile Predict',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.amber,
+        primarySwatch: Colors.blueGrey,
       ),
-      home: MyHomePage(title: 'Predição de dados',camera: camera,),
+      home: MyHomePage(
+        title: 'Predição de dados',
+        camera: camera,
+      ),
     );
   }
 }
@@ -59,6 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int metric = 1;
   CameraController _controller;
   Future<void> _initializeControllerFuture;
+  Future<String> predict;
 
   @override
   void initState() {
@@ -79,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var requestBody = {};
+    Map<String, String> requestBody = {};
 
     return Scaffold(
         appBar: AppBar(
@@ -139,36 +142,64 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(top:30),
+            padding: EdgeInsets.only(top: 30),
             child: Container(
-
               width: MediaQuery.of(context).size.width * 0.8,
               height: 40,
-              child: RaisedButton(
-                  child: Text('Enviar'), 
-                  onPressed: () async {
-                     await _initializeControllerFuture;
+              child: Container(
+                  child: RaisedButton(
+                color: Colors.blueGrey,
+                elevation: 5.0,
+                child: Text(
+                  'Enviar',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () async {
+                  await _initializeControllerFuture;
 
-                      final path = join(
+                  final path = join(
+                    (await getTemporaryDirectory()).path,
+                    '${DateTime.now()}.jpeg',
+                  );
+                  await _controller.takePicture(path);
 
-                        (await getTemporaryDirectory()).path,
-                        '${DateTime.now()}.jpeg',
-                      );
-                      await _controller.takePicture(path);
+                  requestBody = {
+                    "model": getAlgoritmValue(model),
+                    "metrics": getMetricValue(metric),
+                    "image": base64Encode(IO.File(path).readAsBytesSync())
+                  };
 
-                      requestBody = {
-                        "model":getAlgoritmValue(model),
-                        "metrics":getMetricValue(metric),
-                        "image":base64Encode(IO.File(path).readAsBytesSync())
-                      };
-
-                      Services.Predict(requestBody);
-                  },                          
-              ),
-              
+                  predict = Services.Predict(requestBody);
+                  showAlertDialog(context);
+                },
+              )),
             ),
           )
         ])));
+  }
+
+  showAlertDialog(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+        title: Center(child: Text("Classificando imagem")),
+        content: Container(
+          width: MediaQuery.of(context).size.width * 0.8,
+          height: 300,
+          child: FutureBuilder(
+            future: predict,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return Text(snapshot.data);
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
+        ));
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        });
   }
 
   List<DropdownMenuItem> _models() {
@@ -213,7 +244,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ];
   }
 
-  getMetricValue(int value){
+  getMetricValue(int value) {
     switch (value) {
       case 0:
         return 'accuracy';
@@ -225,7 +256,8 @@ class _MyHomePageState extends State<MyHomePage> {
         return 'recall';
     }
   }
-  getAlgoritmValue(int value){
+
+  getAlgoritmValue(int value) {
     switch (value) {
       case 0:
         return 'knn';
