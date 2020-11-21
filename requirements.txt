@@ -1,4 +1,6 @@
 wheel>=0.0
+flask>=0.0
+gunicorn>=0
 flask-cors>=0.0
 numpy>=0.0
 pandas>=0.0
@@ -6,4 +8,3 @@ matplotlib>=0.0
 scipy>=0.0
 scikit-learn>=0.0
 opencv-python>=0.0
-flask>=0.0
