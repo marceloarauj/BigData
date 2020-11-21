@@ -1,4 +1,4 @@
-POST http://181.223.204.40:5000 HTTP/1.1
+POST https://bigdatapredict.herokuapp.com/predict
 Content-Type: application/json
 
 {   
