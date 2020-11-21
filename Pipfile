@@ -11,6 +11,7 @@ flask-cors = "*"
 scipy="*"
 scikit-learn="*"
 matplotlib = "*"
+scikit-build ="*"
 opencv-python = "*"
 
 [requires]
