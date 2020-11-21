@@ -1,6 +1,6 @@
 wheel>=0.0
 flask>=0.0
-gunicorn>=0
+gunicorn>=0.0
 flask-cors>=0.0
 numpy>=0.0
 pandas>=0.0
