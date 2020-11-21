@@ -1,9 +1,9 @@
 from flask import Flask,request,jsonify,json
-from flask_cors import CORS
+#from flask_cors import CORS
 from services import PredictServices
 
 app = Flask(__name__)
-cors = CORS(app,resources={r"/predict":{"origins":"*"}})
+#cors = CORS(app,resources={r"/predict":{"origins":"*"}})
 
 services = PredictServices()
 
