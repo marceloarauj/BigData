@@ -1,4 +1,5 @@
 wheel >= 0.0
+gunicorn >= 19.9.0
 flask-cors >= 0.0
 numpy >= 0.0
 pandas >= 0.0
