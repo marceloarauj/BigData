@@ -8,6 +8,9 @@ flask = "*"
 numpy = "*"
 pandas = "*"
 flask-cors = "*"
+scipy="*"
+scikit-learn="*"
+matplotlib = "*"
 
 [requires]
 
