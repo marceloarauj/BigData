@@ -12,6 +12,7 @@ scipy="*"
 scikit-learn="*"
 matplotlib = "*"
 scikit-build ="*"
+cmake="*"
 opencv-python = "*"
 
 [requires]
