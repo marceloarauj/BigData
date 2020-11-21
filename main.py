@@ -3,6 +3,7 @@ from image_handler import ImageHandler
 from machine_learning import MachineLearning
 
 def main():
+
     install = Modules()
     install.install_modules()
 

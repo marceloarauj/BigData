@@ -1,3 +1,7 @@
+#instala os modulos no heroku
+from auto_imports import Modules
+Modules().install_modules()
+
 from flask import Flask,request,jsonify,json
 from flask_cors import CORS
 from services import PredictServices
