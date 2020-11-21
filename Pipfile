@@ -16,3 +16,4 @@ opencv-python = "*"
 [requires]
 
 python_version = "3.8"
+pip_version = "20.2.4"
