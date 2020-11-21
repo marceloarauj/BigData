@@ -6,7 +6,7 @@ class Services{
 
   static Future<String> Predict(body)async{
     
-    String url = 'http://192.168.1.11/predict';
+    String url = 'http://181.223.204.40:5000/predict';
     Map<String,String> headers = {"Content-Type":"application/json"}; 
 
     String requestBody = jsonEncode(body);

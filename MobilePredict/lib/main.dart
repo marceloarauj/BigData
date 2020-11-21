@@ -88,7 +88,8 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar: AppBar(
           title: Text(widget.title),
         ),
-        body: Center(
+        body: SingleChildScrollView(
+          child: Center(
             child: Column(children: <Widget>[
           Padding(
             padding: EdgeInsets.only(top: 30),
@@ -99,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   isExpanded: true,
                   items: _models(),
                   value: model,
-                  icon: Icon(Icons.desktop_windows,color: Colors.red),
+                  icon: Icon(Icons.desktop_windows,color: Colors.green),
                   onChanged: (valor) {
                     setState(() {
                       model = valor;
@@ -116,10 +117,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   isExpanded: true,
                   items: _metrics(),
                   value: metric,
-                  icon: Icon(Icons.data_usage,color: Colors.red,),
+                  icon: Icon(Icons.data_usage,color: Colors.green,),
                   onChanged: (valor) {
                     setState(() {
-                      model = valor;
+                      metric = valor;
                     });
                   },
                 )),
@@ -175,7 +176,8 @@ class _MyHomePageState extends State<MyHomePage> {
               )),
             ),
           )
-        ])));
+        ]))
+        ));
   }
 
   showAlertDialog(BuildContext context) {
@@ -230,7 +232,7 @@ class _MyHomePageState extends State<MyHomePage> {
         value: 0,
       ),
       DropdownMenuItem(
-        child: Text('f1'),
+        child: Text('F1'),
         value: 1,
       ),
       DropdownMenuItem(

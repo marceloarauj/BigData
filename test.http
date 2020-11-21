@@ -1,4 +1,4 @@
-POST http://localhost:5000/predict
+POST http://181.223.204.40:5000 HTTP/1.1
 Content-Type: application/json
 
 {   
