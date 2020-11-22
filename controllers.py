@@ -2,6 +2,8 @@ from flask import Flask,request,jsonify,json
 from flask_cors import CORS
 from services import PredictServices
 
+import os 
+
 app = Flask(__name__)
 cors = CORS(app,resources={r"/predict":{"origins":"*"}})
 
@@ -20,4 +22,4 @@ def postPredict():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')    
+    app.run(host='0.0.0.0',port=os.environ['PORT'])    
