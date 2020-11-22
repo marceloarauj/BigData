@@ -6,7 +6,7 @@ class Services{
 
   static Future<String> Predict(body)async{
     
-    String url = 'http://181.223.204.40:5000/predict';
+    String url = 'https://bigdatapredict.herokuapp.com/predict';
     Map<String,String> headers = {"Content-Type":"application/json"}; 
 
     String requestBody = jsonEncode(body);
@@ -16,7 +16,8 @@ class Services{
                                     body: requestBody);
     
     String responseBody = response.body;
-
-    return responseBody;
+    Map classe = json.decode(responseBody);
+    
+    return classe['class'];
   }
 }

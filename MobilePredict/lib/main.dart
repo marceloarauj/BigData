@@ -190,7 +190,7 @@ class _MyHomePageState extends State<MyHomePage> {
             future: predict,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                return Text(snapshot.data);
+                return Center(child:Text('Classe: ' +snapshot.data));
               } else {
                 return Center(child: CircularProgressIndicator());
               }
