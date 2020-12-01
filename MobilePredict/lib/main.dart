@@ -201,7 +201,12 @@ class _MyHomePageState extends State<MyHomePage> {
             )),
           ),
           Container(
-            child: Image.file(imageFile),
+            height: 320,
+            width: 240,
+            child: Image.file(
+              imageFile,
+              fit: BoxFit.fill,
+            ),
             decoration: BoxDecoration(
                 border: Border.all(color: Colors.white),
                 borderRadius: BorderRadius.circular(0.5)),
