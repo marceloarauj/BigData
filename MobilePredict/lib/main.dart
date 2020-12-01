@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:MobilePredict/models/classe_model.dart';
 import 'package:MobilePredict/service.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int metric = 1;
   CameraController _controller;
   Future<void> _initializeControllerFuture;
-  Future<String> predict;
+  Future<ClasseModel> predict;
 
   @override
   void initState() {
@@ -85,12 +87,13 @@ class _MyHomePageState extends State<MyHomePage> {
     Map<String, String> requestBody = {};
 
     return Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: Text(widget.title),
         ),
         body: SingleChildScrollView(
-          child: Center(
-            child: Column(children: <Widget>[
+            child: Center(
+                child: Column(children: <Widget>[
           Padding(
             padding: EdgeInsets.only(top: 30),
             child: Container(
@@ -100,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   isExpanded: true,
                   items: _models(),
                   value: model,
-                  icon: Icon(Icons.desktop_windows,color: Colors.green),
+                  icon: Icon(Icons.desktop_windows, color: Colors.green),
                   onChanged: (valor) {
                     setState(() {
                       model = valor;
@@ -117,7 +120,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   isExpanded: true,
                   items: _metrics(),
                   value: metric,
-                  icon: Icon(Icons.data_usage,color: Colors.green,),
+                  icon: Icon(
+                    Icons.data_usage,
+                    color: Colors.green,
+                  ),
                   onChanged: (valor) {
                     setState(() {
                       metric = valor;
@@ -170,33 +176,67 @@ class _MyHomePageState extends State<MyHomePage> {
                     "image": base64Encode(IO.File(path).readAsBytesSync())
                   };
 
-                  predict = Services.Predict(requestBody);
-                  showAlertDialog(context);
+                  predict = Services.predict(requestBody);
+                  showAlertDialog(context, path);
                 },
               )),
             ),
           )
-        ]))
-        ));
+        ]))));
   }
 
-  showAlertDialog(BuildContext context) {
+  showAlertDialog(BuildContext context, String imagePath) {
+    File imageFile = File(imagePath);
     AlertDialog alert = AlertDialog(
-        title: Center(child: Text("Classificando imagem")),
         content: Container(
-          width: MediaQuery.of(context).size.width * 0.8,
-          height: 300,
-          child: FutureBuilder(
-            future: predict,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return Center(child:Text('Classe: ' +snapshot.data));
-              } else {
-                return Center(child: CircularProgressIndicator());
-              }
-            },
+      height: MediaQuery.of(context).size.height * 0.7,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0),
+            child: Center(
+                child: Text(
+              "Classificando imagem",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            )),
           ),
-        ));
+          Container(
+            child: Image.file(imageFile),
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.white),
+                borderRadius: BorderRadius.circular(0.5)),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: FutureBuilder(
+                future: predict,
+                builder: (context, AsyncSnapshot<ClasseModel> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return snapshot.data != null
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 20),
+                            child: Center(
+                                child: Text('Classe: ' + snapshot.data.nome)),
+                          )
+                        : Center(child: Text('Erro ao classificar'));
+                  } else {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Center(
+                          child: LinearProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      )),
+                    );
+                  }
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    ));
     showDialog(
         context: context,
         builder: (BuildContext context) {
